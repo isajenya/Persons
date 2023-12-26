@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download JSON File</title>
+    <title>Fetch JSON Example</title>
 </head>
 <body>
 
-<h2>Download JSON File by Person ID</h2>
+<h2>Fetch JSON Example</h2>
 
 <label for="personId">Person ID:</label>
-<input type="text" id="personId" placeholder="Enter Person ID">
-<button type="button" onclick="downloadJson()">Download JSON</button>
+<input type="text" id="personIdInput" placeholder="Enter Person ID">
+<button type="button" onclick="fetchJson()">Fetch JSON</button>
 
-<div id="downloadResponse"></div>
+<div id="jsonResponse"></div>
 
 <script>
-    function downloadJson() {
-        const personId = document.getElementById('personId').value;
+    function fetchJson() {
+        const personId = document.getElementById('personIdInput').value;
 
         if (!personId) {
             alert('Please enter a Person ID.');
@@ -26,30 +26,27 @@
 
         fetch(`http://localhost:8080/api/getJson/${personId}`)
             .then(response => {
+                console.log(response)
                 if (response.ok) {
                     return response.json();
                 } else if (response.status === 404) {
                     throw new Error('Person not found');
                 } else {
-                    throw new Error('Error downloading JSON');
+                    throw new Error('Error fetching JSON');
                 }
             })
             .then(data => {
-                downloadFile(data, `person_${personId}.json`);
-                document.getElementById('downloadResponse').innerText = 'File downloaded successfully.';
+                displayJson(data);
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('downloadResponse').innerText = 'Error downloading JSON.';
+                document.getElementById('jsonResponse').innerText = 'Error fetching JSON.';
             });
     }
 
-    function downloadFile(data, fileName) {
-        const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = fileName;
-        link.click();
+    function displayJson(data) {
+        const jsonResponseDiv = document.getElementById('jsonResponse');
+        jsonResponseDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
     }
 </script>
 
