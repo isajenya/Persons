@@ -28,7 +28,6 @@
 
 <div id="pagination">
     <span id="currentPage">Page 1</span>
-    <button type="button" onclick="changePage(1)">Next</button>
 </div>
 
 <script>
@@ -65,14 +64,6 @@
     function updatePageNumber(pageNumber) {
         currentPage = pageNumber;
         document.getElementById('currentPage').innerText = `Page ${currentPage}`;
-    }
-
-    function changePage(delta) {
-        const newPage = currentPage + delta;
-        if (newPage >= 0) {
-            document.getElementById('pageNumberInput').value = newPage;
-            fetchJson();
-        }
     }
 </script>
 

@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document(collection = "persons")
 public class PersonDTO {
+
 	@Id
 	private String id;
 	private String name;

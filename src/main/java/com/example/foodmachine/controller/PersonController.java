@@ -3,6 +3,9 @@ package com.example.foodmachine.controller;
 import com.example.foodmachine.dom.PersonDTO;
 import com.example.foodmachine.repository.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,30 +19,36 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:63342")
+@Api(tags = "Person Controller", description = "Endpoints related to managing persons")
 public class PersonController {
 	private final PersonRepository repository;
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
+	@Autowired
 	public PersonController(PersonRepository repository) {
 		this.repository = repository;
 	}
 
+	@ApiOperation("Upload a Person")
 	@PostMapping("api/upload")
 	public void addPerson(@RequestBody MultipartFile file) throws IOException {
 		PersonDTO person = objectMapper.readValue(file.getBytes(), PersonDTO.class);
 		repository.save(person);
 	}
 
-	@PostMapping("/{id}")
+	@ApiOperation("Delete a Person by ID")
+	@DeleteMapping("/{id}")
 	public void deletePerson(@PathVariable String id) {
 		repository.deleteById(id);
 	}
 
+	@ApiOperation("Get Person by ID")
 	@GetMapping("/{id}")
 	public Optional<PersonDTO> getPersonById(@PathVariable String id) {
 		return repository.findById(id);
 	}
 
+	@ApiOperation("Download JSON by Person ID")
 	@GetMapping("/api/getJson/{personId}")
 	public ResponseEntity<PersonDTO> downloadJson(@PathVariable String personId) {
 		return repository.findById(personId)
@@ -47,6 +56,7 @@ public class PersonController {
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
+	@ApiOperation("Get JSON data with pagination and sorting")
 	@GetMapping("/api/getJson")
 	public ResponseEntity<Page<PersonDTO>> getJson(
 			@RequestParam(defaultValue = "0") int page,

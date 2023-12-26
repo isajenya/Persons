@@ -9,6 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface PersonRepository extends MongoRepository<PersonDTO, String>, PagingAndSortingRepository<PersonDTO, String> {
-	Optional<PersonDTO> findByName(String name);
 
 }
