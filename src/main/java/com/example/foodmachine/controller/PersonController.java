@@ -37,9 +37,7 @@ public class PersonController {
 
 	@GetMapping("/api/getJson/{personId}")
 	public ResponseEntity<PersonDTO> downloadJson(@PathVariable String personId) {
-		Optional<PersonDTO> personDTO = repository.findByName("Vlad");
-
-		return personDTO
+		return repository.findById(personId)
 				.map(dto -> ResponseEntity.ok().body(dto))
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
