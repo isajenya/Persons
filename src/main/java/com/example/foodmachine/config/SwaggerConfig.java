@@ -26,7 +26,7 @@ public class SwaggerConfig {
                 "Your API Title",
                 "Your API Description",
                 "API Version",
-                "Terms of service",
+                "Terms of util",
                 null,
                 "License of API",
                 "API license URL"

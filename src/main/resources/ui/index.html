@@ -67,10 +67,6 @@
             .then(data => {
                 document.getElementById('responseMessage').innerText = data.message;
             })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('responseMessage').innerText = 'Error uploading file.';
-            });
     }
 
     function downloadJson() {

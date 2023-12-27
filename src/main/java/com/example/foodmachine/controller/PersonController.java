@@ -5,7 +5,6 @@ import com.example.foodmachine.repository.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,24 +16,27 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.example.foodmachine.util.PersonUtility.getPersonDTO;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:63342")
 @Api(tags = "Person Controller", description = "Endpoints related to managing persons")
 public class PersonController {
 	private final PersonRepository repository;
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper;
 
-	@Autowired
-	public PersonController(PersonRepository repository) {
+	public PersonController(PersonRepository repository, ObjectMapper objectMapper) {
 		this.repository = repository;
+		this.objectMapper = objectMapper;
 	}
 
 	@ApiOperation("Upload a Person")
 	@PostMapping("api/upload")
 	public void addPerson(@RequestBody MultipartFile file) throws IOException {
-		PersonDTO person = objectMapper.readValue(file.getBytes(), PersonDTO.class);
+		PersonDTO person = getPersonDTO(file, objectMapper);
 		repository.save(person);
 	}
+
 
 	@ApiOperation("Delete a Person by ID")
 	@DeleteMapping("/{id}")
@@ -63,8 +65,8 @@ public class PersonController {
 			@RequestParam(defaultValue = "10") int size,
 			@RequestParam(defaultValue = "id") String sortBy
 	) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
 
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
 		Page<PersonDTO> personPage = repository.findAll(pageable)
 				.map(dto -> objectMapper.convertValue(dto, PersonDTO.class));
 
