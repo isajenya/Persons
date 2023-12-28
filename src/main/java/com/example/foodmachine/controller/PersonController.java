@@ -54,7 +54,7 @@ public class PersonController {
 	@GetMapping("/api/getJson/{personId}")
 	public ResponseEntity<PersonDTO> downloadJson(@PathVariable String personId) {
 		return repository.findById(personId)
-				.map(dto -> ResponseEntity.ok().body(dto))
+				.map(personDTO -> ResponseEntity.ok().body(personDTO))
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
@@ -68,7 +68,7 @@ public class PersonController {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
 		Page<PersonDTO> personPage = repository.findAll(pageable)
-				.map(dto -> objectMapper.convertValue(dto, PersonDTO.class));
+				.map(personDTO -> objectMapper.convertValue(personDTO, PersonDTO.class));
 
 		return ResponseEntity.ok().body(personPage);
 	}
